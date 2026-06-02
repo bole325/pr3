@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>我的成绩 - 课程作业管理系统</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">📚 作业管理系统</div>
+        <div class="nav-user">
+            <span>👨‍🎓 {{ session.real_name }}</span>
+            <a href="/student" class="nav-link">返回作业</a>
+            <a href="/logout" class="nav-link">退出登录</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>📊 我的成绩单</h2>
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>作业名称</th>
+                    <th>提交时间</th>
+                    <th>分数</th>
+                    <th>评语</th>
+                    <th>状态</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                    <td>{{ submission.assignment_title }}</td>
+                    <td>{{ submission.submit_time }}</td>
+                    <td class="score-cell">
+                        {% if submission.score %}
+                            <span class="score-value">{{ submission.score }}</span>
+                        {% else %}
+                            <span class="pending">待批改</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ submission.feedback or '-' }}</td>
+                    <td>
+                        {% if submission.status == 'graded' %}
+                            <span class="badge graded">已批改</span>
+                        {% elif submission.status == 'resubmitted' %}
+                            <span class="badge resubmitted">已修改</span>
+                        {% else %}
+                            <span class="badge submitted">已提交</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

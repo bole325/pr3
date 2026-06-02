@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>管理员后台 - 课程作业管理系统</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">📚 作业管理系统 - 管理员</div>
+        <div class="nav-user">
+            <span>👑 {{ session.real_name }}</span>
+            <a href="/export_data" class="nav-link">📥 导出数据</a>
+            <a href="/logout" class="nav-link">退出登录</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="stats-cards">
+            <div class="stat-card">
+                <h3>{{ stats.student_count }}</h3>
+                <p>学生人数</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ stats.teacher_count }}</h3>
+                <p>教师人数</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ stats.assignment_count }}</h3>
+                <p>作业总数</p>
+            </div>
+            <div class="stat-card">
+                <h3>{{ stats.submission_count }}</h3>
+                <p>提交次数</p>
+            </div>
+        </div>
+
+        <div class="section-header">
+            <h2>👥 用户管理</h2>
+            <button class="btn-primary" onclick="showAddUserForm()">+ 添加用户</button>
+        </div>
+
+        <div id="add-user-form" class="create-form" style="display:none;">
+            <h3>添加新用户</h3>
+            <form method="POST" action="/add_user">
+                <input type="text" name="username" placeholder="用户名" required>
+                <input type="text" name="real_name" placeholder="真实姓名" required>
+                <select name="role">
+                    <option value="student">学生</option>
+                    <option value="teacher">教师</option>
+                    <option value="admin">管理员</option>
+                </select>
+                <div class="form-actions">
+                    <button type="submit" class="btn-confirm">添加</button>
+                    <button type="button" class="btn-cancel" onclick="hideAddUserForm()">取消</button>
+                </div>
+            </form>
+            <p class="tip">默认密码：123456</p>
+        </div>
+
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>用户名</th>
+                    <th>真实姓名</th>
+                    <th>角色</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.real_name }}</td>
+                    <td>
+                        {% if user.role == 'student' %}
+                            <span class="badge student">学生</span>
+                        {% elif user.role == 'teacher' %}
+                            <span class="badge teacher">教师</span>
+                        {% else %}
+                            <span class="badge admin">管理员</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if user.id != session.user_id %}
+                            <a href="/delete_user/{{ user.id }}" class="btn-delete" 
+                               onclick="return confirm('确定删除吗？')">删除</a>
+                        {% else %}
+                            <span class="text-muted">当前用户</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function showAddUserForm() {
+            document.getElementById('add-user-form').style.display = 'block';
+        }
+        function hideAddUserForm() {
+            document.getElementById('add-user-form').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

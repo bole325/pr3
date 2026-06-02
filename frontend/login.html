@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>登录 - 课程作业管理系统</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="login-container">
+        <h2>📚 课程作业管理系统</h2>
+        <form method="POST">
+            <input type="text" name="username" placeholder="用户名" required>
+            <input type="password" name="password" placeholder="密码" required>
+            <button type="submit">登录</button>
+        </form>
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% for category, message in messages %}
+                    <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+            {% endwith %}
+        </div>
+        <div class="tips">
+            <p>测试账号：</p>
+            <p>学生：student1 / 123456</p>
+            <p>教师：teacher1 / 123456</p>
+            <p>管理员：admin1 / 123456</p>
+        </div>
+    </div>
+</body>
+</html>

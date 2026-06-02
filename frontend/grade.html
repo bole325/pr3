@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>批改作业 - {{ assignment.title }}</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">📚 作业管理系统</div>
+        <div class="nav-user">
+            <span>👨‍🏫 {{ session.real_name }}</span>
+            <a href="/teacher" class="nav-link">返回</a>
+            <a href="/logout" class="nav-link">退出登录</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>📝 {{ assignment.title }}</h2>
+        <p class="assignment-info">截止时间：{{ assignment.deadline }}</p>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>学生姓名</th>
+                    <th>提交内容</th>
+                    <th>提交时间</th>
+                    <th>分数</th>
+                    <th>评语</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for submission in submissions %}
+                <tr>
+                    <td>{{ submission.student_name }}</td>
+                    <td class="content-cell">
+                        <div class="submission-content">{{ submission.content }}</div>
+                    </td>
+                    <td>{{ submission.submit_time }}</td>
+                    <form method="POST" action="/save_score">
+                        <input type="hidden" name="submission_id" value="{{ submission.id }}">
+                        <td>
+                            <input type="number" name="score" value="{{ submission.score or '' }}" 
+                                   min="0" max="100" class="score-input" placeholder="0-100">
+                        </td>
+                        <td>
+                            <input type="text" name="feedback" value="{{ submission.feedback or '' }}" 
+                                   class="feedback-input" placeholder="评语">
+                        </td>
+                        <td>
+                            <button type="submit" class="btn-save">保存</button>
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

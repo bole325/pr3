@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>学生工作台 - 课程作业管理系统</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">📚 作业管理系统</div>
+        <div class="nav-user">
+            <span>👨‍🎓 {{ session.real_name }}</span>
+            <a href="/my_submissions" class="nav-link">我的成绩</a>
+            <a href="/logout" class="nav-link">退出登录</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2>📋 作业列表</h2>
+        <div class="assignment-list">
+            {% for assignment in assignments %}
+            <div class="assignment-card">
+                <div class="assignment-header">
+                    <h3>{{ assignment.title }}</h3>
+                    <span class="deadline">截止：{{ assignment.deadline }}</span>
+                </div>
+                <p class="assignment-desc">{{ assignment.description }}</p>
+                <p class="teacher-info">👨‍🏫 教师：{{ assignment.teacher_name }}</p>
+                
+                {% if assignment.submit_status %}
+                    <div class="submission-info">
+                        <p class="status submitted">✅ 已提交</p>
+                        {% if assignment.score %}
+                            <p class="score">📊 分数：{{ assignment.score }} 分</p>
+                            <p class="feedback">💬 评语：{{ assignment.feedback or '暂无评语' }}</p>
+                        {% else %}
+                            <p class="score">⏳ 待批改</p>
+                        {% endif %}
+                        <button class="btn-resubmit" onclick="showSubmitForm({{ assignment.id }})">📝 修改提交</button>
+                    </div>
+                {% else %}
+                    <button class="btn-submit" onclick="showSubmitForm({{ assignment.id }})">📤 提交作业</button>
+                {% endif %}
+                
+                <div id="submit-form-{{ assignment.id }}" class="submit-form" style="display:none;">
+                    <form method="POST" action="/submit_assignment/{{ assignment.id }}">
+                        <textarea name="content" placeholder="请输入作业内容..." rows="5"></textarea>
+                        <div class="form-actions">
+                            <button type="submit" class="btn-confirm">确认提交</button>
+                            <button type="button" class="btn-cancel" onclick="hideSubmitForm({{ assignment.id }})">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function showSubmitForm(id) {
+            document.getElementById('submit-form-' + id).style.display = 'block';
+        }
+        function hideSubmitForm(id) {
+            document.getElementById('submit-form-' + id).style.display = 'none';
+        }
+    </script>
+</body>
+</html>

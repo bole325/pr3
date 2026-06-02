@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>教师工作台 - 课程作业管理系统</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-brand">📚 作业管理系统</div>
+        <div class="nav-user">
+            <span>👨‍🏫 {{ session.real_name }}</span>
+            <a href="/logout" class="nav-link">退出登录</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="section-header">
+            <h2>📝 发布新作业</h2>
+            <button class="btn-primary" onclick="showCreateForm()">+ 发布作业</button>
+        </div>
+
+        <div id="create-form" class="create-form" style="display:none;">
+            <h3>发布新作业</h3>
+            <form method="POST" action="/create_assignment">
+                <input type="text" name="title" placeholder="作业标题" required>
+                <textarea name="description" placeholder="作业描述" rows="3"></textarea>
+                <input type="datetime-local" name="deadline" required>
+                <div class="form-actions">
+                    <button type="submit" class="btn-confirm">发布</button>
+                    <button type="button" class="btn-cancel" onclick="hideCreateForm()">取消</button>
+                </div>
+            </form>
+        </div>
+
+        <h2>📋 已发布作业</h2>
+        <div class="assignment-list">
+            {% for assignment in assignments %}
+            <div class="assignment-card teacher-card">
+                <div class="assignment-header">
+                    <h3>{{ assignment.title }}</h3>
+                    <span class="deadline">截止：{{ assignment.deadline }}</span>
+                </div>
+                <p class="assignment-desc">{{ assignment.description }}</p>
+                <div class="stats">
+                    <span>📊 提交人数：{{ assignment.submit_count }}</span>
+                </div>
+                <a href="/grade_assignment/{{ assignment.id }}" class="btn-grade">✏️ 批改作业</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        function showCreateForm() {
+            document.getElementById('create-form').style.display = 'block';
+        }
+        function hideCreateForm() {
+            document.getElementById('create-form').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
